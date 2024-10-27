@@ -9,7 +9,7 @@ import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 
 import { generateVerificationToken } from "@/lib/tokens";
 import { getUserByEmail } from "@/data/user";
-import { sendVerificationEmail } from "@/lib/mail";
+import { sendVerificationEmail_NodeMailer } from "@/lib/nodemailer-mail";
 
 export const login = async (values: z.infer<typeof LoginSchema>) => {
   const validatedFields = LoginSchema.safeParse(values);
@@ -30,7 +30,7 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
       existingUser.email
     );
 
-    await sendVerificationEmail(
+    await sendVerificationEmail_NodeMailer(
       verificationToken.email,
       verificationToken.token
     );
