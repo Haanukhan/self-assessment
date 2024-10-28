@@ -27,6 +27,9 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
   });
   const verificationToken = await generateVerificationToken(email);
 
-  await sendVerificationEmail_NodeMailer(verificationToken.email, verificationToken.token);
+  await sendVerificationEmail_NodeMailer(
+    verificationToken.email,
+    verificationToken.token
+  );
   return { success: "Confirmation Email Sent!" };
 };

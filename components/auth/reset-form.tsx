@@ -13,36 +13,30 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { z } from "zod";
-import { LoginSchema } from "@/schemas";
+import { ResetSchema } from "@/schemas";
 import { FormError } from "@/components/form-error";
 import { FormSuccess } from "@/components/form-success";
-import { login } from "@/actions/login";
+import { reset } from "@/actions/reset";
 import { useState, useTransition } from "react";
-import { useSearchParams } from "next/navigation";
-import Link from "next/link";
 
-export const LoginForm = () => {
-  const searchParams = useSearchParams();
-  const urlError =
-    searchParams.get("error") === "OAuthAccountNotLinked"
-      ? "Emil is already in use with the different provider!"
-      : "";
+export const ResetForm = () => {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
-  const form = useForm<z.infer<typeof LoginSchema>>({
-    resolver: zodResolver(LoginSchema),
+  const form = useForm<z.infer<typeof ResetSchema>>({
+    resolver: zodResolver(ResetSchema),
     defaultValues: {
       email: "",
-      password: "",
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof LoginSchema>) => {
+  const onSubmit = async (values: z.infer<typeof ResetSchema>) => {
     setError("");
     setSuccess("");
+console.log(values);
+    
     startTransition(() => {
-      login(values).then((data) => {
+      reset(values).then((data) => {
         setError(data?.error);
         setSuccess(data?.success);
       });
@@ -51,10 +45,9 @@ export const LoginForm = () => {
 
   return (
     <CardWrapper
-      headerLabel="Welcome Back"
-      backButtonLabel="Don't have an account?"
+      headerLabel="Forgot Your Password?"
+      backButtonLabel="Back to login"
       backButtonHref="/auth/register"
-      showSocial
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -72,7 +65,6 @@ export const LoginForm = () => {
                     disabled={isPending}
                     placeholder="john.doe@example.com"
                     type="email"
-
                     className="border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 rounded-lg shadow-md transition duration-150 ease-in-out px-4 py-2"
                   />
                 </FormControl>
@@ -80,40 +72,16 @@ export const LoginForm = () => {
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-gray-800 font-semibold">
-                  Password
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    disabled={isPending}
-                    type="password"
-                    placeholder="********"
-                    
-                    className="border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 rounded-lg shadow-md transition duration-150 ease-in-out px-4 py-2"
-                  />
-                </FormControl>
-                <Button size="sm" variant="link" asChild className="px-0 font-normal">
-                  <Link href="/auth/reset">Forget password?</Link>
-                </Button>
-                <FormMessage className="text-red-600" />
-              </FormItem>
-            )}
-          />
-          <FormError message={error || urlError} />
+          
+          <FormError message={error} />
           <FormSuccess message={success} />
 
           <Button
             disabled={isPending}
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-500 transition duration-300 text-white rounded-lg shadow-md py-3 mt-6 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-300"
+            className="w-full bg-purple-900 hover:bg-purple-500 transition duration-300 text-white rounded-lg shadow-md py-3 mt-6 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-300"
           >
-            Login
+            Send Reset Email
           </Button>
         </form>
       </Form>

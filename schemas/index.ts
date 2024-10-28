@@ -7,6 +7,18 @@ export const LoginSchema = z.object({
     .min(6, "Password must be at least 6 characters long")
     .nonempty("Password is required"),
 });
+
+export const ResetSchema = z.object({
+  email: z.string().email({message: "Email is required"}),
+});
+
+export const NewPasswordSchema = z.object({
+  password: z
+    .string()
+    .min(6, "Password must be at least 6 characters long")
+    .nonempty("Password is required"),
+});
+
 export const RegisterSchema = z.object({
   name: z
     .string()
